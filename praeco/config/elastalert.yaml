@@ -1,0 +1,86 @@
+# The elasticsearch hostname for metadata writeback
+# Note that every rule can have its own elasticsearch host
+es_host: elasticsearch01
+
+# The elasticsearch port
+es_port: 9200
+
+# This is the folder that contains the rule yaml files
+# Any .yaml file will be loaded as a rule
+rules_folder: rules
+
+# How often ElastAlert 2 will query elasticsearch
+# The unit can be anything from weeks to seconds
+run_every:
+  seconds: 30
+
+# ElastAlert 2 will buffer results from the most recent
+# period of time, in case some log sources are not in real time
+buffer_time:
+  minutes: 1
+
+# Optional URL prefix for elasticsearch
+#es_url_prefix: elasticsearch
+
+# Connect with TLS to elasticsearch
+#use_ssl: True
+
+# Verify TLS certificates
+#verify_certs: True
+
+# GET request with body is the default option for Elasticsearch.
+# If it fails for some reason, you can pass 'GET', 'POST' or 'source'.
+# See http://elasticsearch-py.readthedocs.io/en/master/connection.html?highlight=send_get_body_as#transport
+# for details
+#es_send_get_body_as: GET
+
+# Option basic-auth username and password for elasticsearch
+es_username: elastic
+es_password: pwelastic
+
+# The index on es_host which is used for metadata storage
+# This can be a unmapped index, but it is recommended that you run
+# elastalert-create-index to set a mapping
+writeback_index: praeco_elastalert_status
+
+# If an alert fails for some reason, ElastAlert will retry
+# sending the alert until this time period has elapsed
+alert_time_limit:
+  minutes: 2
+
+skip_invalid: True
+
+old_query_limit:
+  hours: 1
+
+logging:
+  version: 1
+  incremental: false
+  disable_existing_loggers: true
+  formatters:
+    logline:
+      format: '%(asctime)s %(levelname)+8s %(name)+20s %(message)s'
+
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: logline
+      stream: ext://sys.stderr
+
+    file:
+      class : logging.FileHandler
+      formatter: logline
+      filename: elastalert.log
+
+  loggers:
+      elastalert:
+          level: ERROR
+          handlers: []
+          propagate: true
+
+      '':  # root logger
+        level: ERROR
+        handlers:
+          - console
+          - file
+        propagate: false

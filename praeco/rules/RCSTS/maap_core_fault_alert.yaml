@@ -1,0 +1,42 @@
+__praeco_query_builder: "{\"query\":{\"logicalOperator\":\"all\",\"children\":[{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"netRslt\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"netRslt\",\"value\":\"54004\"}},{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"carrier\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"carrier\",\"value\":\"20001\"}}]}}"
+alert:
+  - "ms_teams"
+alert_subject: "{0} Maap Core 장애"
+alert_subject_args:
+  - "carrierType"
+alert_text: "시간 : {0}\n건수 : {1}"
+alert_text_args:
+  - "@localtime"
+  - "num_hits"
+alert_text_type: "alert_text_only"
+filter:
+  - query:
+      query_string:
+        query: "netRslt:54004 AND carrier:20001"
+generate_kibana_discover_url: false
+import: "../BaseRule.config"
+index: "rs-rslt-*"
+is_enabled: true
+kibana_discover_from_timedelta:
+  minutes: 10
+kibana_discover_to_timedelta:
+  minutes: 10
+match_enhancements: []
+ms_teams_alert_summary: "maap_core_fault_alert"
+ms_teams_attach_kibana_discover_url: false
+ms_teams_kibana_discover_title: "Discover in Kibana"
+ms_teams_theme_color: "#ff0000"
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8e4c9eb0-f3ae-4b19-b41f-b5c6691e5aaf@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/4fb7ecd588734d99a7eef9a8c0e86c0d/91cd6c78-4002-486f-823c-6d6d012afa76"
+name: "maap_core_fault_alert"
+num_events: 1
+query_key:
+  - "carrierType"
+realert:
+  minutes: 1
+terms_size: 50
+timeframe:
+  minutes: 1
+timestamp_field: "@timestamp"
+timestamp_type: "iso"
+type: "frequency"
+use_strftime_index: false

@@ -1,0 +1,40 @@
+__praeco_query_builder: "{\"query\":{\"logicalOperator\":\"all\",\"children\":[{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"description\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"description\",\"value\":\"*Database*\"}},{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"description\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"description\",\"value\":\"*Not*\"}},{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"description\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"description\",\"value\":\"*Connected*\"}}]}}"
+alert:
+  - "ms_teams"
+  - "post"
+alert_subject: "{0} DB 장애"
+alert_subject_args:
+  - "tsId"
+alert_text: "시간 : {0}<br>Database is Disconnected"
+alert_text_args:
+  - "@localtime"
+alert_text_type: "alert_text_only"
+filter:
+  - query:
+      query_string:
+        query: "description:*Database* AND description:*Not* AND description:*Connected*"
+generate_kibana_discover_url: false
+http_post_timeout: 10
+http_post_url: "http://211.115.98.163:45000/alert/disconnected/database"
+import: "../BaseRule.config"
+index: "rcsts-alertlog-*"
+is_enabled: true
+kibana_discover_from_timedelta:
+  minutes: 10
+kibana_discover_to_timedelta:
+  minutes: 10
+match_enhancements: []
+ms_teams_alert_summary: "rcsts_database_alert"
+ms_teams_attach_kibana_discover_url: false
+ms_teams_kibana_discover_title: "Discover in Kibana"
+ms_teams_theme_color: "#ff0000"
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8e4c9eb0-f3ae-4b19-b41f-b5c6691e5aaf@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/4fb7ecd588734d99a7eef9a8c0e86c0d/91cd6c78-4002-486f-823c-6d6d012afa76"
+name: "rcsts_database_alert"
+query_key:
+  - "tsId"
+realert:
+  minutes: 1
+timestamp_field: "@timestamp"
+timestamp_type: "iso"
+type: "any"
+use_strftime_index: false

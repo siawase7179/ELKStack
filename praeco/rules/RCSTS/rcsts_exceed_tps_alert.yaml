@@ -1,0 +1,39 @@
+__praeco_query_builder: "{\"query\":{\"logicalOperator\":\"all\",\"children\":[{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"description\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"description\",\"value\":\"*Too*\"}},{\"type\":\"query-builder-rule\",\"query\":{\"rule\":\"description\",\"selectedOperator\":\"contains\",\"selectedOperand\":\"description\",\"value\":\"*Many*\"}}]}}"
+alert:
+  - "ms_teams"
+alert_subject: "{0}({1}) TPS 초과"
+alert_subject_args:
+  - "tsId"
+  - "tsCode"
+alert_text: "시간 : {0}\n"
+alert_text_args:
+  - "@localtime"
+alert_text_type: "alert_text_only"
+filter:
+  - query:
+      query_string:
+        query: "description:*Too* AND description:*Many*"
+generate_kibana_discover_url: false
+import: "../BaseRule.config"
+index: "rcsts-alertlog-*"
+is_enabled: true
+kibana_discover_from_timedelta:
+  minutes: 10
+kibana_discover_to_timedelta:
+  minutes: 10
+match_enhancements: []
+ms_teams_alert_summary: "rcsts_exceed_tps_alert"
+ms_teams_attach_kibana_discover_url: false
+ms_teams_kibana_discover_title: "Discover in Kibana"
+ms_teams_theme_color: "#ff0000"
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8e4c9eb0-f3ae-4b19-b41f-b5c6691e5aaf@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/4fb7ecd588734d99a7eef9a8c0e86c0d/91cd6c78-4002-486f-823c-6d6d012afa76"
+name: "rcsts_exceed_tps_alert"
+query_key:
+  - "tsId"
+  - "tsCode"
+realert:
+  minutes: 1
+timestamp_field: "@timestamp"
+timestamp_type: "iso"
+type: "any"
+use_strftime_index: false

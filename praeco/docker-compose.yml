@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  elastalert:
+    image: 'praecoapp/elastalert-server'
+    container_name: elastalert
+    ports:
+      - 43030:3030
+      - 43333:3333
+    volumes:
+      - ./config/elastalert.yaml:/opt/elastalert/config.yaml
+      - ./config/api.config.json:/opt/elastalert-server/config/config.json
+      - ./rules:/opt/elastalert/rules
+      - ./rule_templates:/opt/elastalert/rule_templates
+      - ./elastalert_modules:/opt/elastalert/elastalert_modules:ro,Z
+      - ./elastalert:/opt/elastalert/elastalert
+    extra_hosts:
+      - 'elasticsearch:localhost'
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+  webapp:
+    image: 'praecoapp/praeco'
+    container_name: praeco-webapp
+    ports:
+      - 52102:8080
+    volumes:
+      - ./config/elastalert.yaml:/tmp/nginx/praeco/config/elastalert.yaml:ro,Z
+      - ./rules/BaseRule.config:/tmp/nginx/praeco/rules/BaseRule.config:ro,Z
+      - ./config/api.config.json:/tmp/nginx/praeco/config/api.config.json:ro,Z
+      - ./public/praeco.config.json:/var/www/html/praeco.config.json
+      - ./nginx_config/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx_config/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+networks:
+  proxynet:
+    name: elasticsearch_elk
