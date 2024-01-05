@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  filebeat:
+    image: 'docker.elastic.co/beats/filebeat:8.6.2'
+    container_name: filebeat
+    user: root
+    command:
+      - -e
+      - --strict.perms=false
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro,Z
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+networks:
+  proxynet:
+    name: elasticsearch_elk

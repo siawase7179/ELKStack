@@ -1,0 +1,90 @@
+version: '3.7'
+
+services:
+  elasticsearch01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch01
+    volumes:
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z
+      - ./config/certs:/usr/share/elasticsearch/config/certs:Z
+    ports:
+      - 49200:9200
+      - 49300:9300
+    environment:
+      discovery.seed_hosts: elasticsearch02,elasticsearch03
+      node.name: elasticsearch01
+      cluster.name: es-docker-cluster
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: pwelastic
+      bootstrap.memory_lock: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+  elasticsearch02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch02
+    volumes:
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z
+      - ./config/certs:/usr/share/elasticsearch/config/certs:Z
+    ports:
+      - 49201:9200
+      - 49301:9300
+    environment:
+      discovery.seed_hosts: elasticsearch01,elasticsearch03
+      node.name: elasticsearch02
+      cluster.name: es-docker-cluster
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: pwelastic
+      bootstrap.memory_lock: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    depends_on:
+      - elasticsearch01
+    networks:
+      - proxynet
+    restart: unless-stopped
+  
+  elasticsearch03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch03
+    volumes:
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z
+      - ./config/certs:/usr/share/elasticsearch/config/certs:Z
+    ports:
+      - 49202:9200
+      - 49302:9300
+    environment:
+      discovery.seed_hosts: elasticsearch01,elasticsearch02
+      node.name: elasticsearch03
+      cluster.name: es-docker-cluster
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: pwelastic
+      bootstrap.memory_lock: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - proxynet
+    depends_on:
+      - elasticsearch01
+      - elasticsearch02
+    restart: unless-stopped
+    
+networks:
+  proxynet:
+    driver: elasticsearch_elk
+
+volumes:
+  elasticsearch:
+

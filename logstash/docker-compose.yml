@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  logstash01:
+    image: docker.elastic.co/logstash/logstash:8.6.2
+    container_name: logstash01
+    volumes:
+      - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml:Z
+      - ./config/pipelines.yml:/usr/share/logstash/config/pipelines.yml:Z
+      - ./pipeline:/usr/share/logstash/pipeline:Z
+    environment:
+      LS_JAVA_OPTS: -Xms1024m -Xmx2048m
+      LOGSTASH_INTERNAL_PASSWORD: changeme
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+
+networks:
+  proxynet:
+    name: elasticsearch_elk

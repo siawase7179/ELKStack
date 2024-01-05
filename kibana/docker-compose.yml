@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.2
+    container_name: kibana
+    volumes:
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml:Z
+    ports:
+      - 52101:5601
+    networks:
+      - proxynet
+    restart: unless-stopped
+
+networks:
+  proxynet:
+    name: elasticsearch_elk
